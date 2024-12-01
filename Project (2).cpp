@@ -379,31 +379,49 @@ int main()
                 {
                     string newUsername, newPassword;
 
-                    bool userExists = false;
-
                     cout << "Enter New Username: ";
-                    getline(cin, newUsername);
+                    cin >> newUsername;
                     cout << "Enter New Password: ";
-                    getline(cin, newPassword);
+                    cin >> newPassword;
 
-                    if (hasSpecialCharacters(newUsername)) // Check if the username has special characters
+                    if (hasSpecialCharacters(newUsername))
                     {
                         cout << "\033[1;31mInvalid username!\033[0m" << endl;
-                        cout << " Username should not contain special characters." << endl;
-                        break;
+                        cout << "Username should not contain special characters." << endl;
                     }
-
-                    if (!isValidPasswordLength(newPassword)) // Check if the password length is valid (8 characters)
+                    else if (!isValidPasswordLength(newPassword))
                     {
                         cout << "\033[1;31mInvalid password!\033[0m" << endl;
-                        cout << " Password should not exceed 8 characters." << endl;
-                        break;
+                        cout << "Password should not exceed 8 characters." << endl;
                     }
+                    else
+                    {
+                        // Store in arrays
+                        username[count] = newUsername;
+                        password[count] = newPassword;
+                        uFlag[count] = true;
+                        count++;
 
-                    string userName, password;
-
-                    storeCredentials(userName, password);
-
+                        // Write all users to the file
+                        ofstream userFile("credentials.txt");
+                        if (userFile)
+                        {
+                            for (int i = 0; i < count; i++)
+                            {
+                                if (uFlag[i]) // Only store active users
+                                {
+                                    userFile << username[i] << " " << password[i] << endl;
+                                }
+                            }
+                            userFile.close();
+                            cout << "\033[1;32mUser added successfully!\033[0m" << endl;
+                        }
+                        else
+                        {
+                            cout << "\033[1;31mError storing credentials!\033[0m" << endl;
+                        }
+                    }
+                    
                     break;
                 }
                 case 6:
